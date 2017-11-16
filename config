@@ -1,0 +1,3 @@
+export PLAYER=spotify
+#export PLAYEY=itunes
+export INTERVAL=5
