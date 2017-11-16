@@ -12,7 +12,13 @@ stat $1
 
 currentstatus=`cat status`
 
-result=`./analyze.sh $1`
+. ./analyze.sh $1
+if [ $? -eq 1 ]
+then
+    result="on"
+else
+    result="off"
+fi
 
 echo result: $result
 

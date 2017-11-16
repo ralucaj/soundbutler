@@ -1,2 +1,2 @@
 #!/bin/sh
-echo off
+return 0
