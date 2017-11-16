@@ -1,12 +1,9 @@
 setup:
 edit config file to suit your needs
 
-$ brew install imagesnap
-$ brew install fswatch
-
+$ brew install ffmpeg
 
 run:
 
-$ ./watch.sh
 $ ./takephotos.sh
 
