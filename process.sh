@@ -12,7 +12,7 @@ stat $1
 
 currentstatus=`cat status`
 
-. ./analyze.sh $1
+python predict_on_image.py $1
 if [ $? -eq 1 ]
 then
     result="on"
