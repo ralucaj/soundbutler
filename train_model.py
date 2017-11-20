@@ -31,9 +31,9 @@ def get_custom_vgg():
 
     return Model(model.input, outputs=x)
 
-
-def get_train_generator(path_to_dir, batch_size, target_size=(244, 244)):
-    data_generator = ImageDataGenerator(preprocessing_function=vgg_preprocess)
+def get_test_generator(path_to_dir, batch_size, target_size=(244, 244)):
+    data_generator = ImageDataGenerator(preprocessing_function=vgg_preprocess,
+                                        fill_mode='reflect')
 
     generator = data_generator.flow_from_directory(
         path_to_dir,
@@ -43,20 +43,39 @@ def get_train_generator(path_to_dir, batch_size, target_size=(244, 244)):
 
     return generator
 
+def get_train_generator(path_to_dir, batch_size, target_size=(244, 244)):
+    data_generator = ImageDataGenerator(preprocessing_function=vgg_preprocess,
+                                        rotation_range=0.2,
+                                        shear_range=0.2,
+                                        zoom_range=0.2,
+                                        width_shift_range=0.2,
+                                        height_shift_range=0.2,
+                                        horizontal_flip=True,
+                                        fill_mode='reflect')
+
+    generator = data_generator.flow_from_directory(
+        path_to_dir,
+        batch_size=batch_size,
+        target_size=target_size,
+        shuffle=True
+    )
+
+    return generator
+
 
 batch_size = 16
 model = get_custom_vgg()
-train_gen = get_train_generator('store/soundbutler/train', batch_size)
-valid_gen = get_train_generator('store/soundbutler/valid', batch_size)
+train_gen = get_train_generator('/home/ubuntu/store/soundbutler/train', batch_size)
+valid_gen = get_test_generator('/home/ubuntu/store/soundbutler/valid', batch_size)
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 model.fit_generator(train_gen,
-                    steps_per_epoch=int(len(train_gen.filenames) / batch_size),
+                    steps_per_epoch=int(2*len(train_gen.filenames) / batch_size),
                     validation_steps=int(len(valid_gen.filenames) / batch_size),
                     validation_data=valid_gen,
                     epochs=10,
-                    verbose=2
+                    verbose=1
                     )
 
 model.save('soundbutler_model.h5')
